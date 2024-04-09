@@ -1,0 +1,265 @@
+---
+title: "Homework 5"
+output: pdf_document
+---
+
+```{r, echo=FALSE, eval=TRUE, message=FALSE}
+library(tidyverse)
+library(latex2exp)
+theme_set(theme_bw())
+```
+
+# Question 1
+
+### a. Fill in the following table. (First, find the total output from the production function, then find the marginal product by dividing the change in total output by change in labor.)
+
+| Capital | Labor | Total Output | $\text{MP}_\text{L}$ | $\text{AP}_\text{L}$ |
+|:--------|:------|:-------------|:---------------------|:---------------------|
+| 25      | 7     | 126          | 12                   | 18                   |
+| 25      | 8     | 136          | 10                   | 17                   |
+| 25      | 9     | 144          | 8                    | 16                   |
+| 25      | 10    | 150          | 6                    | 15                   |
+| 25      | 11    | 154          | 4                    | 14                   |
+| 25      | 12    | 156          | 2                    | 13                   |
+| 25      | 13    | 156          | 0                    | 12                   |
+| 25      | 14    | 154          | -2                   | 11                   |
+| 25      | 15    | 150          | -4                   | 10                   |
+
+### b. How many units of labor should the firm hire to maximize output?
+
+$13, \left(\text{MP}_\text{L}=0\right)$
+
+### c. Draw the short-run TP, $\text{MP}_\text{L}$ and $\text{AP}_\text{L}$ curves. (You will probably want to use two diagrams.)
+
+```{r, echo=FALSE}
+data <- data.frame(capital = c(25,25,25,25,25,25,25,25,25),
+                   labor   = c(7,8,9,10,11,12,13,14,15),
+                   output  = c(126,136,144,150,154,156,156,154,150),
+                   mpl     = c(12,10,8,6,4,2,0,-2,-4),
+                   apl     = c(18,17,16,15,14,13,12,11,10))
+
+C <- \(K) \(L) K*L - L*L
+```
+
+```{r, echo=FALSE, warning=FALSE, out.width="90%"}
+data |>
+  ggplot(aes(x=labor)) +
+  xlab("Labor") +
+  geom_point(aes(y=mpl)) +
+  geom_line(aes(y=mpl)) +
+  annotate("text", x=10, y=4, label=TeX("$MP_L$")) +
+  geom_point(aes(y=apl)) +
+  geom_line(aes(y=apl)) +
+  annotate("text", x=13, y=14, label=TeX("$AP_L$")) +
+  ylab("Product of Labor")
+```
+
+```{r, echo=FALSE, warning=FALSE, out.width="90%"}
+data |>
+  ggplot(aes(x=labor)) +
+  xlab("Labor") +
+  geom_point(aes(y=output)) +
+  stat_function(fun = C(25)) +
+  ylab("Output")
+```
+
+# Question 2
+
+$$
+q=f(L,K)=L^{0.45} K^{0.7}
+$$
+
+### a. Derive expressions for marginal product of labor and marginal product of capital, $\text{MP}_\text{L}$ and $\text{MP}_\text{K}$.
+
+$$
+\frac{\delta q}{\delta L} = 0.45 \cdot \frac{K^{0.7}}{L^{0.55}}
+$$
+
+$$
+\frac{\delta q}{\delta K} = 0.7 \cdot \frac{L^{0.45}}{K^{0.3}}
+$$
+
+### b. Derive the expression for marginal rate of technical substitution, MRTS.
+
+$$
+\frac{\delta K}{\delta L} =
+-\frac{\frac{\delta q}{\delta L}}{\frac{\delta q}{\delta K}} =
+-\frac{0.45 \cdot \frac{K^{0.7}}{L^{0.55}}}{0.7 \cdot \frac{L^{0.45}}{K^{0.3}}} =
+-\frac{0.45}{0.7} \cdot \frac{K}{L}
+$$
+
+### c. Does this production function display constant, increasing, or decreasing returns to scale? Why?
+
+$$
+\text{IRS}
+$$$$
+f(\alpha L,\alpha K) =
+(\alpha L)^{0.45} (\alpha K)^{0.7} =
+\alpha^{1.15} L^{0.45} K^{0.7} =
+\alpha^{1.15} f(L,K) >
+\alpha f(L,K)
+$$
+
+### d. By how much would output increase if the firm increased each input by 50%?
+
+$$
+f(1.5 L,1.5 K) =
+1.5^{1.15} f(L,K) \approx
+1.594061042... \cdot f(L,K)
+$$$$
+\approx 1.594061042...\text{ times more output.}
+$$
+
+# Question 3
+
+### a) What is an isoquant? Where do we use isoquants?
+
+An isoquant is a boundary of same(iso)-quantity(quant) output, given some inputs of production. In the case of the 2D production function with the inputs labor and capital, it is the line which represents the same amount of production given a range of labor and capital.
+
+### b) What are the properties of isoquants?
+
+- By definition, all points on an isoquant represent the same level of output.
+- Isoquants do not cross.
+- Isoquants are always downward sloping.
+- Each bundle of production inputs belongs to exactly one isoquant, not 0 and not more than one.
+
+### c)  Draw a representative family of isoquants for a standard Cobb-Douglas production function.
+
+```{r, echo=FALSE, warning=FALSE, out.width="90%"}
+data.frame(capital = 0:64, labor = 0:64) |>
+  ggplot(aes(x=labor,y=capital)) +
+  xlab("Labor") +
+  stat_function(fun = \(x) 0.0625/x) +
+  stat_function(fun = \(x) 0.125/x) +
+  stat_function(fun = \(x) 0.25/x) +
+  stat_function(fun = \(x) 0.5/x) +
+  stat_function(fun = \(x) 1/x) +
+  stat_function(fun = \(x) 2/x) +
+  stat_function(fun = \(x) 4/x) +
+  stat_function(fun = \(x) 8/x) +
+  stat_function(fun = \(x) 16/x) +
+  ylab("Capital") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  scale_x_continuous(limits = c(0, 5)) +
+  scale_y_continuous(limits = c(0, 5))
+```
+
+### d) Suppose that a firm has fixed-proportions production function, in which one unit of output is produced using one worker and two units of capital. If the firm has an extra worker and no more capital, it can produce only one unit of output. Similarly, one more unit of capital does the firm no good. Draw the isoquants for this production function.
+
+
+```{r, echo=FALSE, warning=FALSE, out.width="90%"}
+data.frame(capital = 0:2, labor = 0:2) |>
+  ggplot(aes(x=labor,y=capital)) +
+  geom_line(aes(x=c(0,0,8),y=c(16,0,0))) +
+  geom_line(aes(x=c(1,1,8),y=c(16,2,2))) +
+  geom_line(aes(x=c(2,2,8),y=c(16,4,4))) +
+  geom_line(aes(x=c(3,3,8),y=c(16,6,6))) +
+  geom_line(aes(x=c(4,4,8),y=c(16,8,8))) +
+  geom_line(aes(x=c(5,5,8),y=c(16,10,10))) +
+  geom_line(aes(x=c(6,6,8),y=c(16,12,12))) +
+  geom_line(aes(x=c(7,7,8),y=c(16,14,14))) +
+  xlab("Labor") +
+  ylab("Capital") +
+  geom_hline(yintercept = 0) +
+  geom_vline(xintercept = 0) +
+  scale_x_discrete(limits = 0:8) +
+  scale_y_discrete(limits = 0:8*2)
+```
+
+# Question 4
+
+### a. Fill in the following table.
+
+| q  | FC  | VC | C   | MC | AFC                    | AVC | AC                     |
+|:---|:----|:---|:----|:---|:-----------------------|:----|:-----------------------|
+| 0  | 100 | 0  | 100 | -- | --                     | --  | --                     |
+| 1  | 100 | 5  | 105 | 5  | 100                    | 5   | 105                    |
+| 2  | 100 | 10 | 110 | 5  | 50                     | 5   | 55                     |
+| 3  | 100 | 15 | 115 | 5  | $33.\overline{3}$      | 5   | $38.\overline{3}$      |
+| 4  | 100 | 20 | 120 | 5  | 25                     | 5   | 30                     |
+| 5  | 100 | 25 | 125 | 5  | 20                     | 5   | 25                     |
+| 6  | 100 | 30 | 130 | 5  | $16.\overline{6}$      | 5   | $21.\overline{6}$      |
+| 7  | 100 | 35 | 135 | 5  | $14.\overline{285714}$ | 5   | $16.\overline{285714}$ |
+| 8  | 100 | 40 | 140 | 5  | 12.5                   | 5   | 17.5                   |
+| 9  | 100 | 45 | 145 | 5  | $11.\overline{1}$      | 5   | $16.\overline{1}$      |
+| 10 | 100 | 50 | 150 | 5  | 10                     | 5   | 15                     |
+
+### b. Does this firm’s short-run cost structure display economies of scale? Why or why not?
+
+Economies of scale. The Average lowers as quantity produced increases.
+
+# Question 5
+
+$C = 10 + 10q - 4q^2 + q^3$
+
+### a. Derive the formula for the firm’s marginal cost.
+
+$$
+\frac{\delta C}{\delta q} = 10 - 8q + 3q^2
+$$
+
+### b. Derive the formula for the firm’s average cost.
+
+$$
+\frac{C}{q} = \frac{10}{q} + 10 - 4q + q^2
+$$
+
+### c. Plot the cost function on one graph, and below that plot the marginal and average cost curves (just like in Figure 7.1, but only graph C, MC, and AC).
+
+```{r, echo=FALSE}
+C <- \(q) 10 + (10*q) - (4*q*q) + (q*q*q)
+MC <- \(q) 10 - (8*q) + (3*q*q)
+AC <- \(q) C(q)/q
+data <- data.frame(quantity= (16:128)/32) |>
+  mutate(cost= C(quantity),
+         marginalCost= MC(quantity),
+         averageCost= AC(quantity))
+```
+
+```{r, echo=FALSE, warning=FALSE, out.width="90%"}
+data |>
+  ggplot(aes(x=quantity)) +
+  geom_line(aes(y=cost)) +
+  annotate("text", x=3.3, y=33, label="C") +
+  geom_line(aes(y=marginalCost)) +
+  annotate("text", x=3.5, y=9, label="MC") +
+  geom_line(aes(y=averageCost)) +
+  annotate("text", x=3.5, y=22, label="AC") +
+  xlab("Quantity") +
+  ylab("Cost")
+```
+
+# Question 6
+
+$$
+q = 3 L^{\frac{1}{3}} K^{\frac{2}{3}}
+$$$$
+C = \$8 L + \$128 K
+$$
+
+a. What is the cost-minimizing bundle of labor and capital for producing output of q = 600 units?
+
+$$
+K = \frac{\bar{C}}{\$128} - \frac{\$8}{\$128} L
+$$$$
+\frac{\delta K}{\delta L} = -\frac{8}{128} = -\frac{1}{16}
+$$$$
+\frac{\delta K}{\delta L} = -\frac{\frac{2}{3}L}{\frac{1}{3}K} = -\frac{2L}{K}
+$$$$
+-\frac{2L}{K} = -\frac{1}{16} \Rightarrow \frac{L}{K} = \frac{1}{32}
+$$$$
+600 = 3 \left(\frac{K^*}{32}\right)^{\frac{1}{3}} {K^*}^{\frac{2}{3}} \Rightarrow
+K^* = 400 \sqrt[3]{4} \approx 634.9604208...
+$$$$
+L^* = \frac{K^*}{32} = 12.5 \sqrt[3]{4} \approx 19.84251315...
+$$
+
+b. What is total cost at this bundle?
+
+$$
+C^* = \$8 L^* + \$128 K^* =
+\$8 \cdot 12.5 \sqrt[3]{4} + \$128 \cdot 400 \sqrt[3]{4} =
+\$51300 \sqrt[3]{4} \approx
+\$81433.67397...
+$$
