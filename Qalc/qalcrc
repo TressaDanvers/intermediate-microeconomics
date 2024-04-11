@@ -20,5 +20,6 @@ MAVC(AVC):=diff(AVC,q)
 MPR(p,AVC):=MR(p)-MC(AVC)
 
 MaxPq(p,AVC):=element(solve(MPR(p,AVC)=0,q),1)
+MaxP(p,AVC,FC):=TPR(p,AVC,FC,MaxPq(p,AVC))
 MinAVC(AVC):=element(solve(MAVC(AVC)=0,q),1)
 SDP(AVC):=replace(AVC,"q",MinAVC(AVC),1)
